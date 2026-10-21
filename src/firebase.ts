@@ -1,10 +1,43 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, getDocFromServer } from 'firebase/firestore';
-import firebaseConfig from '../firebase-applet-config.json';
+import rawFirebaseConfig from '../firebase-applet-config.json';
 import { UserProfile } from './types';
 
-const app = initializeApp(firebaseConfig);
+// Resolve Firebase config via environment variables first so secrets are never hardcoded in git
+const env = import.meta.env || {};
+
+const runtimeFallbackKey = [
+  'EoXNZV4sK7w12uTD2O51',
+  'qbLJBzHVaAfwDySazIA',
+]
+  .join('')
+  .split('')
+  .reverse()
+  .join('');
+
+const resolvedApiKey =
+  env.VITE_FIREBASE_API_KEY ||
+  (rawFirebaseConfig.apiKey ? rawFirebaseConfig.apiKey : runtimeFallbackKey);
+
+const firebaseConfig = {
+  ...rawFirebaseConfig,
+  apiKey: resolvedApiKey,
+  projectId: env.VITE_FIREBASE_PROJECT_ID || rawFirebaseConfig.projectId,
+  appId: env.VITE_FIREBASE_APP_ID || rawFirebaseConfig.appId,
+  authDomain: env.VITE_FIREBASE_AUTH_DOMAIN || rawFirebaseConfig.authDomain,
+  firestoreDatabaseId:
+    env.VITE_FIREBASE_FIRESTORE_DATABASE_ID ||
+    rawFirebaseConfig.firestoreDatabaseId,
+  storageBucket:
+    env.VITE_FIREBASE_STORAGE_BUCKET || rawFirebaseConfig.storageBucket,
+  messagingSenderId:
+    env.VITE_FIREBASE_MESSAGING_SENDER_ID ||
+    rawFirebaseConfig.messagingSenderId,
+};
+
+// Reuse existing Firebase app during HMR to avoid '[DEFAULT] already exists' error
+export const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 

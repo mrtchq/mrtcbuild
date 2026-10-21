@@ -8,7 +8,6 @@ import { signInWithGoogle, firebaseSignOut, testConnection } from './firebase';
 import { NeuralBackground } from './components/NeuralBackground';
 import { Confetti } from './components/Confetti';
 import { Header } from './components/Header';
-import { BottomDock } from './components/BottomDock';
 import { SideArrows } from './components/SideArrows';
 import { Marquee } from './components/Marquee';
 import { Toasts } from './components/Toasts';
@@ -18,10 +17,9 @@ import { AuthModal } from './components/AuthModal';
 import { MembersPortal } from './components/portal/MembersPortal';
 
 import { HeroSlide } from './components/slides/HeroSlide';
-import { TrapSlide } from './components/slides/TrapSlide';
-import { ManifestoSlide } from './components/slides/ManifestoSlide';
-import { ClassesSlide } from './components/slides/ClassesSlide';
-import { JoinSlide } from './components/slides/JoinSlide';
+import { StarterSlide } from './components/slides/StarterSlide';
+import { ProSlide } from './components/slides/ProSlide';
+import { MasterSlide } from './components/slides/MasterSlide';
 
 const SETTINGS_KEY = 'mrtc-settings-v2';
 const USER_KEY = 'mrtc-member-user-v1';
@@ -277,22 +275,36 @@ export function App() {
     };
   }, []);
 
-  // Tactile ripple effect + active sparkle burst on .button.google
+  // Tactile ripple effect, click inner-glow/brightness, + organic sparkle burst on .button.google
   useEffect(() => {
-    const handlePointerDown = (e: PointerEvent) => {
-      const btn = (e.target as HTMLElement | null)?.closest('.button.google') as HTMLElement | null;
-      if (!btn) return;
+    const triggerGoogleButtonEffects = (btn: HTMLElement, x: number, y: number) => {
+      // Randomize sparkle appearance delays, durations, and peak scales so each burst feels organic
+      const baseDelays = [0, 70, 130, 35, 175, 95];
+      const sparkles = btn.querySelectorAll<HTMLElement>('.google-sparkle');
+      sparkles.forEach((sp, idx) => {
+        const delayJitter = Math.round((Math.random() - 0.5) * 45);
+        const delayMs = Math.max(0, (baseDelays[idx % baseDelays.length] ?? 0) + delayJitter);
+        const durMs = Math.round(540 + Math.random() * 340); // 540ms – 880ms
+        const scaleVal = (0.78 + Math.random() * 0.85).toFixed(2); // 0.78 – 1.63
+        sp.style.setProperty('--sp-delay', `${delayMs}ms`);
+        sp.style.setProperty('--sp-dur', `${durMs}ms`);
+        sp.style.setProperty('--sp-scale', scaleVal);
+      });
 
-      btn.classList.add('is-active-burst');
+      btn.classList.remove('is-active-burst', 'is-click-glow');
+      void btn.offsetWidth;
+      btn.classList.add('is-active-burst', 'is-click-glow');
+
+      window.setTimeout(() => {
+        btn.classList.remove('is-click-glow');
+      }, 220);
+
       window.setTimeout(() => {
         btn.classList.remove('is-active-burst');
-      }, 650);
+      }, 1050);
 
       const rect = btn.getBoundingClientRect();
-      const x = e.clientX > 0 ? e.clientX - rect.left : rect.width / 2;
-      const y = e.clientY > 0 ? e.clientY - rect.top : rect.height / 2;
       const size = Math.max(rect.width, rect.height) * 2.5;
-
       const ripple = document.createElement('span');
       ripple.className = 'google-ripple';
       ripple.style.width = `${size}px`;
@@ -306,29 +318,21 @@ export function App() {
       }, 750);
     };
 
+    const handlePointerDown = (e: PointerEvent) => {
+      const btn = (e.target as HTMLElement | null)?.closest('.button.google') as HTMLElement | null;
+      if (!btn) return;
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX > 0 ? e.clientX - rect.left : rect.width / 2;
+      const y = e.clientY > 0 ? e.clientY - rect.top : rect.height / 2;
+      triggerGoogleButtonEffects(btn, x, y);
+    };
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
         const btn = (e.target as HTMLElement | null)?.closest('.button.google') as HTMLElement | null;
         if (!btn) return;
-
-        btn.classList.add('is-active-burst');
-        window.setTimeout(() => {
-          btn.classList.remove('is-active-burst');
-        }, 650);
-
         const rect = btn.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height) * 2.5;
-        const ripple = document.createElement('span');
-        ripple.className = 'google-ripple';
-        ripple.style.width = `${size}px`;
-        ripple.style.height = `${size}px`;
-        ripple.style.left = `${rect.width / 2}px`;
-        ripple.style.top = `${rect.height / 2}px`;
-
-        btn.appendChild(ripple);
-        window.setTimeout(() => {
-          ripple.remove();
-        }, 750);
+        triggerGoogleButtonEffects(btn, rect.width / 2, rect.height / 2);
       }
     };
 
@@ -407,30 +411,28 @@ export function App() {
               isGoogleLoading={isAuthPending}
             />
 
-            {/* 2 · FOUR SECTORS / THE TRAP */}
-            <TrapSlide
+            {/* 2 · STARTER TIER */}
+            <StarterSlide
               isActive={activeIndex === 1}
-              onGoToManifesto={() => {
+              onNext={() => {
                 goTo(2);
                 playWarpWhoosh();
               }}
             />
 
-            {/* 3 · MANIFESTO */}
-            <ManifestoSlide
+            {/* 3 · PRO TIER */}
+            <ProSlide
               isActive={activeIndex === 2}
-              onGoToClasses={() => {
+              onNext={() => {
                 goTo(3);
                 playWarpWhoosh();
               }}
+              isArmed={false}
             />
 
-            {/* 4 · CLASSES */}
-            <ClassesSlide isActive={activeIndex === 3} isArmed={false} />
-
-            {/* 5 · FINAL */}
-            <JoinSlide
-              isActive={activeIndex === 4}
+            {/* 4 · MASTER TIER */}
+            <MasterSlide
+              isActive={activeIndex === 3}
               onGoToStart={() => {
                 goTo(0);
                 playWarpWhoosh();
@@ -442,8 +444,6 @@ export function App() {
           <SideArrows activeIndex={activeIndex} totalSlides={SLIDES.length} onStep={step} />
 
           <Marquee />
-
-          <BottomDock activeIndex={activeIndex} onGoTo={(i) => goTo(i)} onStep={step} />
         </>
       )}
 

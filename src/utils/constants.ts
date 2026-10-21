@@ -4,11 +4,10 @@ export const RANKS = ['RECRUIT', 'OPERATOR', 'BUILDER', 'ARCHITECT', 'COMMANDER'
 export const THRESH = [0, 50, 130, 240, 380, 550] as const;
 
 export const SLIDES: SlideDef[] = [
-  { id: 'top', title: 'Start here', accent: 'gold', label: '1 of 5 — Start here' },
-  { id: 'trap', title: 'Four sectors', accent: 'gold', label: '2 of 5 — Four sectors' },
-  { id: 'manifesto', title: 'Golden age', accent: 'cyan', label: '3 of 5 — The manifesto' },
-  { id: 'classes', title: 'Choose your class', accent: 'gold', label: '4 of 5 — Choose your class' },
-  { id: 'join', title: 'Join free', accent: 'gold', label: '5 of 5 — Join free' },
+  { id: 'top', title: 'Start here', accent: 'gold', label: '1 of 4 — Start here' },
+  { id: 'starter', title: 'Starter Class', accent: 'cyan', label: '2 of 4 — Starter Class' },
+  { id: 'pro', title: 'Pro Class', accent: 'gold', label: '3 of 4 — Pro Class' },
+  { id: 'master', title: 'Master Class', accent: 'purple', label: '4 of 4 — Master Class' },
 ];
 
 export const TINTS: Record<AccentColor, [string, string, string]> = {

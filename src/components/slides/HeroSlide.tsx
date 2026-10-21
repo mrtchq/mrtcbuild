@@ -64,7 +64,7 @@ export const HeroSlide: React.FC<HeroSlideProps> = ({
       data-title="Start here"
       data-accent="gold"
       aria-roledescription="slide"
-      aria-label="1 of 5 — Start here"
+      aria-label="1 of 4 — Start here"
     >
       <div className="slide-scroll">
         <div className="slide-inner">
