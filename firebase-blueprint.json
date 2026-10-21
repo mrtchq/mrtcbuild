@@ -1,0 +1,26 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Registered member profile with membership tier and metadata",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "User UID from Firebase Auth" },
+        "email": { "type": "string", "description": "Member email address" },
+        "displayName": { "type": "string", "description": "Member display name" },
+        "photoURL": { "type": "string", "description": "Avatar URL" },
+        "tier": { "type": "string", "description": "Active tier: Starter Lab, Builder's Circle, Mastermind Track" },
+        "memberSince": { "type": "string", "description": "Join date label" },
+        "createdAt": { "type": "string", "description": "Account creation timestamp" },
+        "updatedAt": { "type": "string", "description": "Account update timestamp" }
+      },
+      "required": ["id", "email", "tier"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User accounts and membership status"
+    }
+  }
+}

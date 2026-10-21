@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#06050b">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" href="/assets/logo.jpg">
+<link rel="apple-touch-icon" href="/assets/logo.jpg">
+<title>MrTC Builds — Stop Storing. Start Building.</title>
+<meta name="description" content="MrTC Builds turns AI into your external executive function. Break the Wall of Awful into stupid-small quests. The golden age for neurodivergent brains is here — move.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MrTC Builds — Stop Storing. Start Building.">
+<meta property="og:description" content="Break the Wall of Awful into stupid-small quests. The golden age for neurodivergent brains is here.">
+<meta property="og:image" content="/assets/logo.jpg">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="scanlines">
+<div id="root"></div>
+<script type="module" src="/src/main.tsx"></script>
+<script>
+(function(f,n) { n = document.createElement('script'); n.src = 'https://fcdn.answerly.io/fn.js'; n.setAttribute('data-companyId', f); document.getElementsByTagName('html')[0].insertAdjacentElement('beforeend', n); })('3c4bb44a-bf4b-47c5-afb4-06ad06033638');
+</script>
+<script>
+(function(){
+  var styleId = 'mrtc-answerly-shadow-fix';
+  var css = '[shadow="spotlight"] .h, [shadow="spotlight"] .ci { box-shadow: none !important; }' +
+            'html, body { background: transparent !important; }';
+  function patchFrame(frame) {
+    function install() {
+      frame.style.colorScheme = 'dark';
+      frame.style.background = 'transparent';
+      frame.style.boxShadow = 'none';
+      try {
+        var doc = frame.contentDocument;
+        if (!doc || !doc.documentElement || doc.getElementById(styleId)) return;
+        var style = doc.createElement('style');
+        style.id = styleId;
+        style.textContent = css;
+        (doc.head || doc.documentElement).appendChild(style);
+      } catch (_) {}
+    }
+    frame.addEventListener('load', install);
+    install();
+  }
+  var observer;
+  function findWidget() {
+    var frames = document.querySelectorAll('iframe.cf[title="Widget"]');
+    if (!frames.length) return false;
+    frames.forEach(patchFrame);
+    if (observer) observer.disconnect();
+    return true;
+  }
+  if (!findWidget()) {
+    observer = new MutationObserver(findWidget);
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+  }
+})();
+</script>
+</body>
+</html>
